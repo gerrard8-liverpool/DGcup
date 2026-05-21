@@ -1,0 +1,68 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# PyCharm
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data files
+data/raw/*
+data/processed/*
+data/external/*
+
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+
+# Outputs
+outputs/figures/*
+outputs/tables/*
+outputs/models/*
+outputs/submissions/*
+
+!outputs/figures/.gitkeep
+!outputs/tables/.gitkeep
+!outputs/models/.gitkeep
+!outputs/submissions/.gitkeep
+
+# Model files
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Large data files
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.npy
+*.npz
+*.mat
+*.zip
+*.rar
+*.7z
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
