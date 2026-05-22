@@ -65,3 +65,9 @@ outputs/figures/sensitivity_*.png
 outputs/figures/q4_storage_benefit_per_cost.png
 outputs/figures/q4_storage_capacity_scan.png
 outputs/figures/q4_storage_annual_tradeoff.png
+
+# Local/archive outputs not tracked in repository
+outputs/archive/
+outputs/models/
+outputs/submissions/
+outputs/project_file_inventory.txt
