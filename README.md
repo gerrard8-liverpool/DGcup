@@ -66,7 +66,9 @@
 ### 问题四：目标权重敏感性下的推荐容量稳定性
 
 <p align="center">
+  <img src="outputs/figures/q4_weight_sensitivity_recommended_capacity.png" alt="Q4 Weight Sensitivity Recommended Capacity" width="82%">
 </p>
+
 
 ---
 
