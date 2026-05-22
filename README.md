@@ -1,8 +1,258 @@
+
+# DGcup
+
+电工杯 A 题项目：面向园区风光制氢合成氨系统的运行分析与优化建模。
+
+本项目围绕“风电—光伏—制氢—合成氨”综合能源系统，建立统一的小时级功率平衡与成本核算框架，依次完成：
+
+- **问题一**：典型日基准核算与绿电指标校验；
+- **问题二**：离散制氨负荷调度优化；
+- **问题三**：连续制氨负荷调度优化；
+- **问题四**：离网运行与储能容量技术经济分析。
+
+项目的核心目标不是孤立地解决单个小问，而是构建一个统一的系统优化框架，回答以下关键问题：
+
+1. 当前园区典型日运行是否满足绿电直连政策指标；
+2. 制氨负荷如何调度才能降低吨氨成本；
+3. 连续调节相比离散调节能带来多少系统收益；
+4. 离网场景下储能容量应如何在产量、弃电与成本之间折中配置。
+
+---
+
+## 核心结果总览
+
+### 问题一：典型日功率平衡
+
+<p align="center">
+  <img src="outputs/figures/q1_power_balance.png" alt="Q1 Power Balance" width="88%">
+</p>
+
+### 问题二：离散制氨调度成本对比
+
+<p align="center">
+  <img src="outputs/figures/q2_typical_cost_vs_production.png" alt="Q2 Cost vs Production" width="82%">
+</p>
+
+### 问题三：连续调节相对离散调节的成本下降
+
+<p align="center">
+  <img src="outputs/figures/q3_vs_q2_cost_reduction.png" alt="Q3 Cost Reduction" width="82%">
+</p>
+
+### 问题四：储能容量单位成本技术收益
+
+<p align="center">
+  <img src="outputs/figures/q4_storage_benefit_per_cost.png" alt="Q4 Storage Benefit" width="82%">
+</p>
+
+### 问题四：联网与离网同产量成本对比
+
+<p align="center">
+  <img src="outputs/figures/q4_grid_vs_offgrid_cost_comparison.png" alt="Q4 Grid vs Offgrid" width="60%">
+</p>
+
+---
+
+## 核心符号与核心公式
+
+### 1. 功率平衡主方程
+
+联网场景下，系统满足：
+
+$$
+P_{\mathrm{wind}}(t)+P_{\mathrm{pv}}(t)+P_{\mathrm{buy}}(t)
+=
+P_{\mathrm{base}}(t)+P_{\mathrm{NH3}}(t)+P_{\mathrm{sell}}(t)
+$$
+
+离网储能场景下，系统满足：
+
+$$
+P_{\mathrm{RE}}(t)+P_{\mathrm{dis}}(t)+P_{\mathrm{unserved}}(t)
+=
+P_{\mathrm{base}}(t)+P_{\mathrm{NH3}}(t)+P_{\mathrm{ch}}(t)+P_{\mathrm{curt}}(t)
+$$
+
+其中：
+
+- $P_{\mathrm{base}}(t)$：园区常规负荷；
+- $P_{\mathrm{NH3}}(t)$：制氢合成氨负荷；
+- $P_{\mathrm{buy}}(t), P_{\mathrm{sell}}(t)$：电网购电与余电上网；
+- $P_{\mathrm{ch}}(t), P_{\mathrm{dis}}(t)$：储能充放电功率；
+- $P_{\mathrm{curt}}(t)$：弃电功率；
+- $P_{\mathrm{unserved}}(t)$：缺供功率。
+
+### 2. 吨氨成本
+
+吨氨成本统一定义为：
+
+$$
+C_{\mathrm{NH3}}
+=
+\frac{
+C_{\mathrm{wind}}+C_{\mathrm{pv}}+C_{\mathrm{grid}}+C_{\mathrm{om}}+C_{\mathrm{capex}}
+}{
+Q_{\mathrm{NH3}}
+}
+$$
+
+其中：
+
+- $C_{\mathrm{wind}}, C_{\mathrm{pv}}$：风电、光伏发电成本；
+- $C_{\mathrm{grid}}$：电网购售电净成本；
+- $C_{\mathrm{om}}$：设备运维成本；
+- $C_{\mathrm{capex}}$：设备年化折旧成本；
+- $Q_{\mathrm{NH3}}$：氨产量。
+
+### 3. 绿电直连指标
+
+按照发改能源〔2025〕650 号文件口径，本文采用以下三项指标：
+
+绿电自发自用比例：
+
+$$
+R_{\mathrm{self}}
+=
+\frac{
+E_{\mathrm{RE,self}}
+}{
+E_{\mathrm{RE,total}}
+}
+$$
+
+绿电消费比例：
+
+$$
+R_{\mathrm{green}}
+=
+\frac{
+E_{\mathrm{RE,self}}
+}{
+E_{\mathrm{load}}
+}
+$$
+
+余电上网比例：
+
+$$
+R_{\mathrm{export}}
+=
+\frac{
+E_{\mathrm{sell}}
+}{
+E_{\mathrm{RE,total}}
+}
+$$
+
+其中：
+
+$$
+E_{\mathrm{RE,self}} = E_{\mathrm{RE,total}} - E_{\mathrm{sell}} - E_{\mathrm{curt}}
+$$
+
+### 4. 储能状态方程
+
+储能荷电状态满足：
+
+$$
+SOC(t+1)
+=
+(1-\sigma)SOC(t)
++\eta_{\mathrm{ch}}P_{\mathrm{ch}}(t)
+-\frac{P_{\mathrm{dis}}(t)}{\eta_{\mathrm{dis}}}
+$$
+
+其中：
+
+- $\eta_{\mathrm{ch}}=0.9$：充电效率；
+- $\eta_{\mathrm{dis}}=0.9$：放电效率；
+- $\sigma=0.002$：自损耗率。
+
+### 5. 储能容量技术经济评价指标
+
+以无储能方案为基准，定义：
+
+$$
+\Delta Q(E)=Q(E)-Q(0)
+$$
+
+$$
+\Delta K(E)=K(0)-K(E)
+$$
+
+$$
+\Delta C(E)=C_{\mathrm{NH3}}(E)-C_{\mathrm{NH3}}(0)
+$$
+
+进一步定义：
+
+单位成本年制氨量提升：
+
+$$
+\eta_Q(E)=
+\frac{
+\Delta Q(E)
+}{
+\Delta C(E)/100
+}
+$$
+
+单位成本弃电削减量：
+
+$$
+\eta_K(E)=
+\frac{
+\Delta K(E)
+}{
+\Delta C(E)/100
+}
+$$
+
+其中：
+
+- $\eta_Q(E)$：每增加 100 元/t 吨氨成本可换来的年制氨量提升；
+- $\eta_K(E)$：每增加 100 元/t 吨氨成本可换来的全年弃电削减量。
+
+根据容量扫描结果，本文将：
+
+- **20 MWh** 识别为技术经济**膝点容量**；
+- **160 MWh** 识别为技术**饱和容量**。
+
+---
+
+## 项目结构
+
 ﻿# 电工杯 A 题：绿电直连型电氢氨园区优化运行
 
 本仓库用于中国大学生电工杯 A 题“绿电直连型电氢氨园区优化运行”的建模、计算、优化与可视化分析。
 
 本项目的核心思路不是把五个问题割裂成独立小题，而是构建一个统一的“电—氢—氨”综合能源系统优化框架。以小时级功率平衡为基础，以绿电直连政策指标和吨氨成本为评价核心，逐步完成典型日核算、离散制氨调度、连续制氨调度、多场景年化统计、离网运行和储能配置优化。
+
+---
+
+## 核心结果展示
+
+### 问题一：典型日功率平衡
+
+![Q1 Power Balance](outputs/figures/q1_power_balance.png)
+
+### 问题二：离散制氨调度成本对比
+
+![Q2 Cost vs Production](outputs/figures/q2_typical_cost_vs_production.png)
+
+### 问题三：连续制氨调度相对问题二的成本下降
+
+![Q3 Cost Reduction](outputs/figures/q3_vs_q2_cost_reduction.png)
+
+### 问题四：储能容量单位成本技术收益
+
+![Q4 Storage Benefit](outputs/figures/q4_storage_benefit_per_cost.png)
+
+### 问题四：联网与离网同产量成本对比
+
+![Q4 Grid vs Offgrid](outputs/figures/q4_grid_vs_offgrid_cost_comparison.png)
+
+
 
 ---
 
