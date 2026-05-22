@@ -29,6 +29,8 @@ def calculate_green_indicators(hourly: pd.DataFrame) -> dict:
     green_power_ratio = renewable_self_used_mwh / total_load_mwh
     renewable_export_ratio = grid_export_mwh / renewable_generation_mwh
 
+    eps = 1e-9
+
     return {
         "total_load_mwh": total_load_mwh,
         "renewable_generation_mwh": renewable_generation_mwh,
@@ -38,7 +40,7 @@ def calculate_green_indicators(hourly: pd.DataFrame) -> dict:
         "renewable_self_use_ratio": renewable_self_use_ratio,
         "green_power_ratio": green_power_ratio,
         "renewable_export_ratio": renewable_export_ratio,
-        "renewable_self_use_pass": renewable_self_use_ratio > 0.60,
-        "green_power_pass": green_power_ratio > 0.30,
-        "renewable_export_pass": renewable_export_ratio < 0.20,
+        "renewable_self_use_pass": renewable_self_use_ratio >= 0.60 - eps,
+        "green_power_pass": green_power_ratio >= 0.30 - eps,
+        "renewable_export_pass": renewable_export_ratio <= 0.20 + eps,
     }

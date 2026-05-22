@@ -489,24 +489,24 @@ def solve_offgrid_storage_dispatch(
         dis_idx = s["dis"].start + t
         b_idx = s["b"].start + t
 
-        # ch <= E*b
+        # ch <= P_bat_max*b
         add_constraint(
             {
                 ch_idx: 1.0,
-                b_idx: -storage_capacity_mwh,
+                b_idx: -storage_power_limit_mw,
             },
             -np.inf,
             0.0,
         )
 
-        # dis <= E*(1-b) -> dis + E*b <= E
+        # dis <= P_bat_max*(1-b) -> dis + P_bat_max*b <= P_bat_max
         add_constraint(
             {
                 dis_idx: 1.0,
-                b_idx: storage_capacity_mwh,
+                b_idx: storage_power_limit_mw,
             },
             -np.inf,
-            storage_capacity_mwh,
+            storage_power_limit_mw,
         )
 
     A = np.vstack(constraints_rows)
