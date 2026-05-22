@@ -10,6 +10,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
+from matplotlib.patches import Patch
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +40,8 @@ def setup_chinese_font() -> None:
             plt.rcParams["font.sans-serif"] = [name]
             break
     plt.rcParams["axes.unicode_minus"] = False
+    plt.rcParams["figure.dpi"] = 120
+    plt.rcParams["savefig.dpi"] = 300
 
 
 def parse_capacities(max_capacity: float, step: float) -> list[float]:
@@ -63,13 +66,13 @@ def annual_capacity_scan(
             params=params,
         )
 
-        annual = summarize_offgrid_annual(
+        annual_df = summarize_offgrid_annual(
             summary_df=summary_df,
             scenario_days=scenario_days,
             mode="offgrid_storage_capacity_scan",
         )
 
-        row = annual.iloc[0].to_dict()
+        row = annual_df.iloc[0].to_dict()
         row["storage_capacity_mwh"] = cap
         rows.append(row)
 
@@ -102,30 +105,59 @@ def annual_capacity_scan(
     df["delta_production_ton"] = df["annual_total_production_ton"].diff()
     df["delta_curtailment_reduction_mwh"] = df["curtailment_reduction_mwh"].diff()
 
-    denom = df["delta_cost_yuan_per_ton"] / 100.0
+    cap_denom = df["delta_capacity_mwh"]
+
+    df["marginal_production_gain_per_mwh"] = np.where(
+        cap_denom > 1e-9,
+        df["delta_production_ton"] / cap_denom,
+        np.nan,
+    )
+
+    df["marginal_curtailment_reduction_per_mwh"] = np.where(
+        cap_denom > 1e-9,
+        df["delta_curtailment_reduction_mwh"] / cap_denom,
+        np.nan,
+    )
+
+    cost_denom = df["delta_cost_yuan_per_ton"] / 100.0
 
     df["marginal_production_gain_per_100yuan"] = np.where(
-        denom > 1e-9,
-        df["delta_production_ton"] / denom,
+        cost_denom > 1e-9,
+        df["delta_production_ton"] / cost_denom,
         np.nan,
     )
 
     df["marginal_curtailment_reduction_per_100yuan"] = np.where(
-        denom > 1e-9,
-        df["delta_curtailment_reduction_mwh"] / denom,
+        cost_denom > 1e-9,
+        df["delta_curtailment_reduction_mwh"] / cost_denom,
         np.nan,
     )
 
     return df
 
 
-def normalize(arr: np.ndarray) -> np.ndarray:
-    arr = np.asarray(arr, dtype=float)
-    vmin = np.nanmin(arr)
-    vmax = np.nanmax(arr)
-    if not np.isfinite(vmin) or not np.isfinite(vmax) or abs(vmax - vmin) < 1e-12:
-        return np.zeros_like(arr)
-    return (arr - vmin) / (vmax - vmin)
+def normalize(values: np.ndarray) -> np.ndarray:
+    values = np.asarray(values, dtype=float)
+    finite = np.isfinite(values)
+
+    out = np.full_like(values, np.nan, dtype=float)
+    if finite.sum() == 0:
+        return out
+
+    vmin = np.nanmin(values)
+    vmax = np.nanmax(values)
+
+    if abs(vmax - vmin) < 1e-12:
+        out[finite] = 0.0
+        return out
+
+    out[finite] = (values[finite] - vmin) / (vmax - vmin)
+    return out
+
+
+def nearest_capacity(capacities: np.ndarray, value: float) -> float:
+    capacities = np.asarray(capacities, dtype=float)
+    return float(capacities[np.nanargmin(np.abs(capacities - value))])
 
 
 def knee_by_chord_distance(df: pd.DataFrame, benefit_col: str) -> dict:
@@ -135,17 +167,11 @@ def knee_by_chord_distance(df: pd.DataFrame, benefit_col: str) -> dict:
     ].copy()
 
     if len(valid) < 3:
-        return {
-            "method": "chord_distance",
-            "knee_capacity_mwh": np.nan,
-            "score": np.nan,
-        }
+        return {"method": "chord_distance", "knee_capacity_mwh": np.nan, "score": np.nan}
 
     x = normalize(valid["storage_capacity_mwh"].to_numpy())
     y = normalize(valid[benefit_col].to_numpy())
 
-    # For an increasing concave benefit curve, the elbow is the point farthest
-    # above the straight line connecting the endpoints.
     score = y - x
     idx = int(np.nanargmax(score))
     row = valid.iloc[idx]
@@ -154,37 +180,42 @@ def knee_by_chord_distance(df: pd.DataFrame, benefit_col: str) -> dict:
         "method": "chord_distance",
         "knee_capacity_mwh": float(row["storage_capacity_mwh"]),
         "score": float(score[idx]),
+        "bic": np.nan,
+        "slope_before": np.nan,
+        "slope_after": np.nan,
+        "slope_ratio": np.nan,
     }
 
 
 def knee_by_normalized_net_benefit(df: pd.DataFrame, benefit_col: str) -> dict:
     valid = df[
         (df["storage_capacity_mwh"] > 0)
-        & (df["cost_increase_yuan_per_ton"] > 1e-9)
         & np.isfinite(df[benefit_col])
+        & np.isfinite(df["annual_avg_ton_cost_yuan_per_ton"])
     ].copy()
 
     if len(valid) < 3:
         return {
-            "method": "normalized_net_benefit",
+            "method": "normalized_benefit_cost_balance",
             "knee_capacity_mwh": np.nan,
             "score": np.nan,
         }
 
     benefit_norm = normalize(valid[benefit_col].to_numpy())
-    cost_norm = normalize(valid["cost_increase_yuan_per_ton"].to_numpy())
+    cost_norm = normalize(valid["annual_avg_ton_cost_yuan_per_ton"].to_numpy())
 
-    # This score is not a manually weighted sum between production and curtailment.
-    # It tests one benefit dimension at a time and balances normalized benefit
-    # against normalized cost increase.
     score = benefit_norm - cost_norm
     idx = int(np.nanargmax(score))
     row = valid.iloc[idx]
 
     return {
-        "method": "normalized_net_benefit",
+        "method": "normalized_benefit_cost_balance",
         "knee_capacity_mwh": float(row["storage_capacity_mwh"]),
         "score": float(score[idx]),
+        "bic": np.nan,
+        "slope_before": np.nan,
+        "slope_after": np.nan,
+        "slope_ratio": np.nan,
     }
 
 
@@ -197,10 +228,11 @@ def knee_by_piecewise_bic(df: pd.DataFrame, benefit_col: str) -> dict:
     x = valid["storage_capacity_mwh"].to_numpy(dtype=float)
     y = valid[benefit_col].to_numpy(dtype=float)
 
-    if len(valid) < 6 or np.nanmax(y) - np.nanmin(y) < 1e-12:
+    if len(valid) < 7 or np.nanmax(y) - np.nanmin(y) < 1e-12:
         return {
             "method": "piecewise_bic",
             "knee_capacity_mwh": np.nan,
+            "score": np.nan,
             "bic": np.nan,
             "slope_before": np.nan,
             "slope_after": np.nan,
@@ -220,8 +252,8 @@ def knee_by_piecewise_bic(df: pd.DataFrame, benefit_col: str) -> dict:
         )
 
         beta, *_ = np.linalg.lstsq(X, y, rcond=None)
-        y_hat = X @ beta
-        sse = float(np.sum((y - y_hat) ** 2))
+        fitted = X @ beta
+        sse = float(np.sum((y - fitted) ** 2))
         sse = max(sse, 1e-12)
 
         n = len(y)
@@ -239,6 +271,7 @@ def knee_by_piecewise_bic(df: pd.DataFrame, benefit_col: str) -> dict:
         item = {
             "method": "piecewise_bic",
             "knee_capacity_mwh": float(tau),
+            "score": np.nan,
             "bic": float(bic),
             "slope_before": slope_before,
             "slope_after": slope_after,
@@ -251,7 +284,19 @@ def knee_by_piecewise_bic(df: pd.DataFrame, benefit_col: str) -> dict:
     return best
 
 
-def build_knee_summary(scan_df: pd.DataFrame) -> pd.DataFrame:
+def saturation_capacity(df: pd.DataFrame, benefit_col: str, threshold: float = 0.99) -> float:
+    max_value = float(df[benefit_col].max())
+    if abs(max_value) < 1e-12:
+        return np.nan
+
+    satisfied = df[df[benefit_col] >= threshold * max_value]
+    if satisfied.empty:
+        return np.nan
+
+    return float(satisfied["storage_capacity_mwh"].iloc[0])
+
+
+def build_knee_summary(scan_df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     benefit_specs = [
         ("production_gain_ton", "年制氨量提升"),
         ("curtailment_reduction_mwh", "弃电削减量"),
@@ -271,135 +316,348 @@ def build_knee_summary(scan_df: pd.DataFrame) -> pd.DataFrame:
             result["benefit_name"] = label
             rows.append(result)
 
-    summary = pd.DataFrame(rows)
+        rows.append(
+            {
+                "method": "saturation_99pct",
+                "benefit_indicator": col,
+                "benefit_name": label,
+                "knee_capacity_mwh": saturation_capacity(scan_df, col, threshold=0.99),
+                "score": np.nan,
+                "bic": np.nan,
+                "slope_before": np.nan,
+                "slope_after": np.nan,
+                "slope_ratio": np.nan,
+            }
+        )
 
-    # Final recommendation: use the production and curtailment knees detected
-    # by normalized net benefit. This avoids assigning subjective weights between
-    # production and curtailment.
-    key = summary[
-        (summary["method"] == "normalized_net_benefit")
-        & (summary["benefit_indicator"].isin(["production_gain_ton", "curtailment_reduction_mwh"]))
-        & np.isfinite(summary["knee_capacity_mwh"])
+    method_summary = pd.DataFrame(rows)
+
+    consensus_pool = method_summary[
+        method_summary["benefit_indicator"].isin(
+            ["production_gain_ton", "curtailment_reduction_mwh"]
+        )
+        & method_summary["method"].isin(
+            ["chord_distance", "normalized_benefit_cost_balance", "piecewise_bic"]
+        )
+        & np.isfinite(method_summary["knee_capacity_mwh"])
+    ].copy()
+
+    capacities = scan_df["storage_capacity_mwh"].to_numpy(dtype=float)
+
+    if consensus_pool.empty:
+        lower = upper = representative = np.nan
+    else:
+        lower = float(consensus_pool["knee_capacity_mwh"].min())
+        upper = float(consensus_pool["knee_capacity_mwh"].max())
+
+        # Conservative engineering recommendation:
+        # choose the upper edge of the consensus knee interval to ensure both
+        # production gain and curtailment reduction have entered the post-knee region.
+        representative = nearest_capacity(capacities, upper)
+
+    saturated_production = method_summary[
+        (method_summary["benefit_indicator"] == "production_gain_ton")
+        & (method_summary["method"] == "saturation_99pct")
+    ]["knee_capacity_mwh"].iloc[0]
+
+    tier_rows = [
+        {
+            "tier": "economic_entry",
+            "capacity_mwh": lower,
+            "interpretation": "累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。",
+        },
+        {
+            "tier": "balanced_knee_recommendation",
+            "capacity_mwh": representative,
+            "interpretation": "年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。",
+        },
+        {
+            "tier": "technical_saturation",
+            "capacity_mwh": saturated_production,
+            "interpretation": "年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。",
+        },
     ]
 
-    if len(key) > 0:
-        lower = float(key["knee_capacity_mwh"].min())
-        upper = float(key["knee_capacity_mwh"].max())
-        representative = float(np.median(key["knee_capacity_mwh"]))
-
-        # Pick the nearest available scanned capacity.
-        capacities = scan_df["storage_capacity_mwh"].to_numpy(dtype=float)
-        representative = float(capacities[np.argmin(np.abs(capacities - representative))])
-    else:
-        lower = upper = representative = np.nan
+    tier_summary = pd.DataFrame(tier_rows)
 
     final_row = {
-        "method": "final_recommendation",
+        "method": "final_consensus_interval",
         "benefit_indicator": "production_and_curtailment",
         "benefit_name": "年制氨量提升与弃电削减",
         "knee_capacity_mwh": representative,
         "recommended_interval_lower_mwh": lower,
         "recommended_interval_upper_mwh": upper,
-        "interpretation": (
-            "推荐容量由年制氨量提升与弃电削减两个维度的单位成本收益拐点共同确定；"
-            "若两个拐点接近，则取其附近标准容量作为工程推荐容量。"
-        ),
+        "score": np.nan,
+        "bic": np.nan,
+        "slope_before": np.nan,
+        "slope_after": np.nan,
+        "slope_ratio": np.nan,
     }
 
-    summary = pd.concat([summary, pd.DataFrame([final_row])], ignore_index=True)
+    method_summary = pd.concat(
+        [method_summary, pd.DataFrame([final_row])],
+        ignore_index=True,
+    )
 
-    return summary
+    return method_summary, tier_summary
 
 
-def plot_capacity_tradeoff(scan_df: pd.DataFrame, knee_summary: pd.DataFrame, figure_dir: Path) -> None:
+def get_final_capacity(knee_summary: pd.DataFrame) -> tuple[float, float, float]:
+    row = knee_summary[knee_summary["method"] == "final_consensus_interval"].iloc[0]
+    rec = float(row["knee_capacity_mwh"])
+    lower = float(row["recommended_interval_lower_mwh"])
+    upper = float(row["recommended_interval_upper_mwh"])
+    return rec, lower, upper
+
+
+def plot_capacity_tradeoff(
+    scan_df: pd.DataFrame,
+    knee_summary: pd.DataFrame,
+    tier_summary: pd.DataFrame,
+    figure_dir: Path,
+) -> None:
     setup_chinese_font()
 
-    final = knee_summary[knee_summary["method"] == "final_recommendation"]
-    rec_cap = float(final["knee_capacity_mwh"].iloc[0]) if len(final) else np.nan
+    rec_cap, lower, upper = get_final_capacity(knee_summary)
 
-    fig, ax1 = plt.subplots(figsize=(12, 7))
+    rec_row = scan_df.loc[
+        scan_df["storage_capacity_mwh"].sub(rec_cap).abs().idxmin()
+    ]
+
+    sat_rows = tier_summary[tier_summary["tier"] == "technical_saturation"]
+    sat_cap = float(sat_rows["capacity_mwh"].iloc[0]) if len(sat_rows) else np.nan
+
+    blue = "#2F6DA5"
+    orange = "#F28E2B"
+    red = "#D62728"
+    green = "#2CA02C"
+    gray = "#E8E8E8"
+
+    fig, ax1 = plt.subplots(figsize=(13.5, 7.5))
+
+    if np.isfinite(lower) and np.isfinite(upper):
+        ax1.axvspan(lower, upper, color=gray, alpha=0.8, label="拐点共识区间")
 
     ax1.plot(
         scan_df["storage_capacity_mwh"],
         scan_df["annual_avg_ton_cost_yuan_per_ton"],
+        color=blue,
         marker="o",
+        linewidth=2.2,
+        markersize=5,
         label="全年吨氨成本",
     )
-    ax1.set_xlabel("储能容量 / MWh")
-    ax1.set_ylabel("全年吨氨成本 / 元·t$^{-1}$")
-    ax1.grid(alpha=0.3)
+
+    ax1.scatter(
+        [rec_cap],
+        [rec_row["annual_avg_ton_cost_yuan_per_ton"]],
+        color=green,
+        edgecolor="black",
+        s=150,
+        zorder=6,
+        label=f"推荐拐点容量约 {rec_cap:.0f} MWh",
+    )
+
+    ax1.axvline(rec_cap, color=green, linestyle=":", linewidth=2.2)
+
+    if np.isfinite(sat_cap):
+        ax1.axvline(sat_cap, color=red, linestyle="--", linewidth=1.8, alpha=0.85)
+
+    ax1.set_xlabel("储能容量 / MWh", fontsize=13)
+    ax1.set_ylabel("全年吨氨成本 / 元·t$^{-1}$", fontsize=13)
+    ax1.grid(alpha=0.25)
 
     ax2 = ax1.twinx()
     ax2.plot(
         scan_df["storage_capacity_mwh"],
         scan_df["annual_total_production_ton"],
+        color=orange,
         marker="s",
         linestyle="--",
+        linewidth=2.2,
+        markersize=5,
         label="全年制氨量",
     )
-    ax2.set_ylabel("全年制氨量 / t")
+    ax2.set_ylabel("全年制氨量 / t", fontsize=13)
 
-    if np.isfinite(rec_cap):
-        ax1.axvline(rec_cap, linestyle=":", linewidth=2)
-        ax1.scatter(
-            [rec_cap],
-            scan_df.loc[
-                scan_df["storage_capacity_mwh"].sub(rec_cap).abs().idxmin(),
-                "annual_avg_ton_cost_yuan_per_ton",
-            ],
-            s=120,
-            zorder=5,
-            label=f"拐点容量约 {rec_cap:.0f} MWh",
-        )
+    annotation = (
+        f"推荐容量：{rec_cap:.0f} MWh\n"
+        f"拐点区间：{lower:.0f}–{upper:.0f} MWh\n"
+        f"吨氨成本：{rec_row['annual_avg_ton_cost_yuan_per_ton']:.2f} 元/t\n"
+        f"年制氨量：{rec_row['annual_total_production_ton']:.2f} t"
+    )
 
-    lines_1, labels_1 = ax1.get_legend_handles_labels()
-    lines_2, labels_2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="best")
+    ax1.text(
+        0.98,
+        0.08,
+        annotation,
+        transform=ax1.transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=11,
+        bbox=dict(boxstyle="round,pad=0.45", facecolor="white", edgecolor="#B0B0B0", alpha=0.95),
+    )
 
-    plt.title("问题四：储能容量—成本—制氨量细步长扫描")
+    custom_handles = [
+        Patch(facecolor=gray, edgecolor="none", label="拐点共识区间"),
+    ]
+
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+
+    handles = custom_handles + lines1 + lines2
+    labels = [h.get_label() for h in custom_handles] + labels1 + labels2
+
+    # Remove duplicate labels while preserving order.
+    unique = []
+    seen = set()
+    for h, label in zip(handles, labels):
+        if label not in seen:
+            unique.append((h, label))
+            seen.add(label)
+
+    ax1.legend(
+        [x[0] for x in unique],
+        [x[1] for x in unique],
+        loc="upper left",
+        frameon=True,
+        framealpha=0.95,
+        fontsize=10,
+    )
+
+    plt.title("问题四：储能容量—成本—制氨量细步长扫描", fontsize=16, pad=12)
     plt.tight_layout()
-    plt.savefig(figure_dir / "q4_storage_knee_capacity_tradeoff.png", dpi=300)
+    plt.savefig(figure_dir / "q4_storage_knee_capacity_tradeoff.png", bbox_inches="tight")
     plt.close(fig)
 
 
-def plot_marginal_benefit(scan_df: pd.DataFrame, knee_summary: pd.DataFrame, figure_dir: Path) -> None:
+def plot_marginal_benefit(
+    scan_df: pd.DataFrame,
+    knee_summary: pd.DataFrame,
+    figure_dir: Path,
+) -> None:
     setup_chinese_font()
 
-    final = knee_summary[knee_summary["method"] == "final_recommendation"]
-    rec_cap = float(final["knee_capacity_mwh"].iloc[0]) if len(final) else np.nan
+    rec_cap, lower, upper = get_final_capacity(knee_summary)
 
     valid = scan_df[scan_df["storage_capacity_mwh"] > 0].copy()
 
-    fig, axes = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+    blue = "#2F6DA5"
+    orange = "#F28E2B"
+    green = "#2CA02C"
+    gray = "#E8E8E8"
+
+    fig, axes = plt.subplots(2, 1, figsize=(13.5, 9.2), sharex=True)
+
+    for ax in axes:
+        if np.isfinite(lower) and np.isfinite(upper):
+            ax.axvspan(lower, upper, color=gray, alpha=0.8)
+        ax.axvline(rec_cap, color=green, linestyle=":", linewidth=2.2)
+        ax.grid(alpha=0.25)
 
     axes[0].plot(
         valid["storage_capacity_mwh"],
-        valid["marginal_production_gain_per_100yuan"],
+        valid["marginal_production_gain_per_mwh"],
+        color=blue,
         marker="o",
+        linewidth=2.2,
+        markersize=5,
         label="边际年制氨量提升",
     )
-    axes[0].set_ylabel("t / (100元·t$^{-1}$)$^{-1}$")
-    axes[0].grid(alpha=0.3)
-    axes[0].legend(loc="best")
+    axes[0].set_ylabel("边际年制氨量提升 / t·MWh$^{-1}$", fontsize=12)
+    axes[0].legend(loc="upper right", frameon=True, framealpha=0.95)
 
     axes[1].plot(
         valid["storage_capacity_mwh"],
-        valid["marginal_curtailment_reduction_per_100yuan"],
+        valid["marginal_curtailment_reduction_per_mwh"],
+        color=orange,
         marker="s",
+        linewidth=2.2,
+        markersize=5,
         label="边际弃电削减量",
     )
-    axes[1].set_xlabel("储能容量 / MWh")
-    axes[1].set_ylabel("MWh / (100元·t$^{-1}$)$^{-1}$")
-    axes[1].grid(alpha=0.3)
-    axes[1].legend(loc="best")
+    axes[1].set_xlabel("储能容量 / MWh", fontsize=13)
+    axes[1].set_ylabel("边际弃电削减量 / MWh·MWh$^{-1}$", fontsize=12)
+    axes[1].legend(loc="upper right", frameon=True, framealpha=0.95)
 
-    if np.isfinite(rec_cap):
-        for ax in axes:
-            ax.axvline(rec_cap, linestyle=":", linewidth=2)
+    fig.text(
+        0.5,
+        0.02,
+        f"灰色区间为多方法识别出的拐点共识区间：{lower:.0f}–{upper:.0f} MWh；绿色虚线为工程推荐容量：{rec_cap:.0f} MWh。",
+        ha="center",
+        va="bottom",
+        fontsize=11,
+        bbox=dict(boxstyle="round,pad=0.35", facecolor="white", edgecolor="#B0B0B0", alpha=0.95),
+    )
 
-    fig.suptitle("问题四：储能容量边际收益递减曲线", y=0.98)
+    fig.suptitle("问题四：储能容量边际收益递减曲线", fontsize=16, y=0.985)
+    plt.tight_layout(rect=[0, 0.055, 1, 0.96])
+    plt.savefig(figure_dir / "q4_storage_knee_marginal_benefit.png", bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_normalized_benefit(
+    scan_df: pd.DataFrame,
+    knee_summary: pd.DataFrame,
+    figure_dir: Path,
+) -> None:
+    setup_chinese_font()
+
+    rec_cap, lower, upper = get_final_capacity(knee_summary)
+
+    df = scan_df.copy()
+    df["production_gain_norm"] = normalize(df["production_gain_ton"].to_numpy())
+    df["curtailment_reduction_norm"] = normalize(df["curtailment_reduction_mwh"].to_numpy())
+    df["cost_norm"] = normalize(df["annual_avg_ton_cost_yuan_per_ton"].to_numpy())
+
+    blue = "#2F6DA5"
+    orange = "#F28E2B"
+    red = "#D62728"
+    green = "#2CA02C"
+    gray = "#E8E8E8"
+
+    fig, ax = plt.subplots(figsize=(13.5, 7.2))
+
+    if np.isfinite(lower) and np.isfinite(upper):
+        ax.axvspan(lower, upper, color=gray, alpha=0.8, label="拐点共识区间")
+
+    ax.plot(
+        df["storage_capacity_mwh"],
+        df["production_gain_norm"],
+        color=blue,
+        marker="o",
+        linewidth=2.2,
+        label="标准化年制氨量提升",
+    )
+    ax.plot(
+        df["storage_capacity_mwh"],
+        df["curtailment_reduction_norm"],
+        color=orange,
+        marker="s",
+        linewidth=2.2,
+        label="标准化弃电削减量",
+    )
+    ax.plot(
+        df["storage_capacity_mwh"],
+        df["cost_norm"],
+        color=red,
+        marker="^",
+        linewidth=2.0,
+        linestyle="--",
+        label="标准化吨氨成本",
+    )
+
+    ax.axvline(rec_cap, color=green, linestyle=":", linewidth=2.2, label=f"推荐容量约 {rec_cap:.0f} MWh")
+
+    ax.set_xlabel("储能容量 / MWh", fontsize=13)
+    ax.set_ylabel("标准化数值", fontsize=13)
+    ax.set_ylim(-0.04, 1.06)
+    ax.grid(alpha=0.25)
+    ax.legend(loc="lower right", frameon=True, framealpha=0.95, fontsize=10)
+
+    plt.title("问题四：储能容量收益—成本标准化对比", fontsize=16, pad=12)
     plt.tight_layout()
-    plt.savefig(figure_dir / "q4_storage_knee_marginal_benefit.png", dpi=300)
+    plt.savefig(figure_dir / "q4_storage_knee_normalized_benefit.png", bbox_inches="tight")
     plt.close(fig)
 
 
@@ -435,19 +693,22 @@ def main():
         capacities=capacities,
     )
 
-    knee_summary = build_knee_summary(scan_df)
+    knee_summary, tier_summary = build_knee_summary(scan_df)
 
     scan_path = table_dir / "q4_storage_capacity_fine_scan.csv"
     summary_path = table_dir / "q4_storage_knee_summary.csv"
+    tier_path = table_dir / "q4_storage_capacity_tiers.csv"
 
     scan_df.to_csv(scan_path, index=False, encoding="utf-8-sig")
     knee_summary.to_csv(summary_path, index=False, encoding="utf-8-sig")
+    tier_summary.to_csv(tier_path, index=False, encoding="utf-8-sig")
 
     if not args.no_figures:
-        plot_capacity_tradeoff(scan_df, knee_summary, figure_dir)
+        plot_capacity_tradeoff(scan_df, knee_summary, tier_summary, figure_dir)
         plot_marginal_benefit(scan_df, knee_summary, figure_dir)
+        plot_normalized_benefit(scan_df, knee_summary, figure_dir)
 
-    final = knee_summary[knee_summary["method"] == "final_recommendation"].iloc[0]
+    final = knee_summary[knee_summary["method"] == "final_consensus_interval"].iloc[0]
 
     print("=" * 96)
     print("Q4 storage knee analysis finished.")
@@ -467,13 +728,16 @@ def main():
         ].to_string(index=False)
     )
     print("-" * 96)
+    print(tier_summary.to_string(index=False))
+    print("-" * 96)
     print(
-        f"Recommended knee capacity: {final['knee_capacity_mwh']} MWh | "
-        f"Interval: [{final.get('recommended_interval_lower_mwh', np.nan)}, "
-        f"{final.get('recommended_interval_upper_mwh', np.nan)}] MWh"
+        f"Recommended balanced knee capacity: {final['knee_capacity_mwh']} MWh | "
+        f"Consensus interval: [{final['recommended_interval_lower_mwh']}, "
+        f"{final['recommended_interval_upper_mwh']}] MWh"
     )
     print(f"Fine scan saved to: {scan_path}")
     print(f"Knee summary saved to: {summary_path}")
+    print(f"Tier summary saved to: {tier_path}")
     print(f"Figures saved to: {figure_dir}")
     print("=" * 96)
 

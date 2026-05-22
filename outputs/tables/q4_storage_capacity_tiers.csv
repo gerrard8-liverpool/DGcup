@@ -1,0 +1,4 @@
+﻿tier,capacity_mwh,interpretation
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。
