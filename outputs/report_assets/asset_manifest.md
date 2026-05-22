@@ -11,6 +11,7 @@
 - **F6** `outputs/report_assets/main_figures/q4_storage_knee_marginal_benefit.png`：Q4 储能容量边际收益递减曲线。证明拐点后边际收益明显下降。 状态：OK
 - **F7** `outputs/report_assets/main_figures/q4_grid_vs_offgrid_cost_comparison.png`：Q4 联网与离网同产量成本对比。说明公共电网的低成本系统平衡价值。 状态：OK
 - **F8** `outputs/report_assets/main_figures/q4_weight_sensitivity_recommended_capacity.png`：Q4 目标权重敏感性下的推荐容量。检验 115 MWh 工程推荐容量是否依赖单一目标权重。 状态：OK
+- **F9** `outputs/report_assets/main_figures/q4_storage_mechanism_framework.svg`：Q4 储能容量配置作用机理与拐点决策框架图。用于解释源荷错配、储能时移调节、边际收益递减以及 20/110–115/150 MWh 分层容量决策逻辑。 状态：OK
 - **T1** `outputs/report_assets/main_tables/q1_summary.csv`：Q1 典型日基准结果。用于 Q1 主要结果。 状态：OK
 - **T10** `outputs/report_assets/main_tables/sensitivity_summary.csv`：敏感性分析汇总。用于说明参数扰动下结论稳定。 状态：OK
 - **T11** `outputs/report_assets/main_tables/robustness_overview.csv`：鲁棒性检验总览。用于说明随机扰动、场景留一和压力测试下结论稳定。 状态：OK
