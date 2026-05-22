@@ -41,6 +41,12 @@ class OffgridStorageParams:
     storage_investment_yuan_per_kwh: float = 1000.0
     storage_om_yuan_per_kwh: float = 0.01
     storage_lifetime_years: int = 15
+
+    # Storage power-to-energy ratio.
+    # 1.0 means 1C: a storage unit can be fully charged/discharged in one hour.
+    # This is an explicit modelling assumption and can be tested in sensitivity analysis.
+    storage_power_c_rate: float = 1.0
+
     charge_efficiency: float = 0.90
     discharge_efficiency: float = 0.90
     self_discharge_rate: float = 0.002
@@ -370,6 +376,7 @@ def solve_offgrid_storage_dispatch(
 
     n_hours = 24
     pmax = total_nh3_power_mw(params)
+    storage_power_limit_mw = storage_capacity_mwh * params.storage_power_c_rate
     s = _storage_variable_slices(n_hours)
     n_vars = s["b"].stop
 
@@ -511,8 +518,8 @@ def solve_offgrid_storage_dispatch(
 
     upper_bounds[s["u"]] = 1.0
     upper_bounds[s["y"]] = 1.0
-    upper_bounds[s["ch"]] = storage_capacity_mwh
-    upper_bounds[s["dis"]] = storage_capacity_mwh
+    upper_bounds[s["ch"]] = storage_power_limit_mw
+    upper_bounds[s["dis"]] = storage_power_limit_mw
     upper_bounds[s["soc"]] = storage_capacity_mwh
     upper_bounds[s["curt"]] = 300.0
     upper_bounds[s["unserved"]] = 300.0

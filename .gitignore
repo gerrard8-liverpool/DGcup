@@ -1,36 +1,54 @@
 ﻿# Python
-.venv/
-venv/
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
 
 # IDE
 .idea/
 .vscode/
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Cache
-.pytest_cache/
-.mypy_cache/
-
-# Data
-data/raw/
-data/processed/
-
-# Outputs
-outputs/
-
-# Reports build files
-*.aux
-*.log
-*.out
-*.toc
-*.synctex.gz
+*.iml
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+*.swp
+
+# Local notebooks / scratch
+notebooks/.ipynb_checkpoints/
+scratch/
+tmp/
+
+# Keep official raw data for reproducibility
+!data/raw/
+!data/raw/*.xlsx
+
+# Keep final result tables and figures
+!outputs/
+!outputs/tables/
+!outputs/tables/*.csv
+!outputs/figures/
+!outputs/figures/*.png
+
+# Ignore heavy or temporary output formats if created later
+outputs/**/*.pkl
+outputs/**/*.joblib
+outputs/**/*.npy
+outputs/**/*.npz
+
+# Keep empty directory markers only if needed
+!.gitkeep
