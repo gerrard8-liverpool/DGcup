@@ -17,9 +17,12 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
+# Data
+data/raw/
+data/processed/
+
 # Outputs
 outputs/
-data/processed/
 
 # Reports build files
 *.aux
@@ -31,8 +34,3 @@ data/processed/
 # OS
 .DS_Store
 Thumbs.db
-
-data/raw/
-
-.idea/
-outputs/
