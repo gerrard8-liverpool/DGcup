@@ -34,21 +34,11 @@ DGcup/
 │  ├─ processed/           # 清洗后的中间数据
 │  └─ external/
 │
-├─ outputs/
-│  ├─ figures/             # 程序生成的图像
-│  ├─ tables/              # 程序生成的表格
-│  └─ logs/
-│
-├─ reports/
-│  ├─ figures/             # 最终论文使用图像
-│  └─ tables/              # 最终论文使用表格
-│
 ├─ scripts/
-│  ├─ run_q1_baseline.py
-│  ├─ run_q2_discrete.py
-│  ├─ run_q3_continuous.py
-│  ├─ run_q4_storage.py
-│  └─ legacy/
+│  ├─ run_q1_baseline.py   # 问题一：典型日基准核算
+│  ├─ run_q2_discrete.py   # 问题二：离散制氨调度
+│  ├─ run_q3_continuous.py # 问题三：连续制氨调度
+│  └─ run_q4_storage.py    # 问题四：离网与储能配置
 │
 ├─ src/
 │  └─ dgcup/
@@ -71,18 +61,16 @@ DGcup/
 │     │  └─ sensitivity.py
 │     │
 │     ├─ visualization/
-│     │  └─ plots.py
+│     │  ├─ plots.py
+│     │  └─ q2_plots.py
 │     │
 │     └─ utils/
 │
-├─ notebooks/
-├─ tests/
-├─ requirements.txt
 ├─ .gitignore
-└─ README.md
+├─ README.md
+├─ main.py
+└─ requirements.txt
 ~~~
-
----
 
 ## 3. 数据放置方式
 
