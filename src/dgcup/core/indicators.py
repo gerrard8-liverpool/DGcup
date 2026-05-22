@@ -1,0 +1,28 @@
+﻿import pandas as pd
+
+
+def calculate_green_indicators(hourly: pd.DataFrame) -> dict:
+    total_load_mwh = hourly["total_load_mw"].sum()
+    renewable_generation_mwh = hourly["renewable_power_mw"].sum()
+    grid_purchase_mwh = hourly["grid_purchase_mw"].sum()
+    grid_export_mwh = hourly["grid_export_mw"].sum()
+
+    renewable_self_used_mwh = total_load_mwh - grid_export_mwh - grid_purchase_mwh
+
+    renewable_self_use_ratio = renewable_self_used_mwh / renewable_generation_mwh
+    green_power_ratio = (renewable_generation_mwh - grid_export_mwh) / total_load_mwh
+    renewable_export_ratio = grid_export_mwh / renewable_generation_mwh
+
+    return {
+        "total_load_mwh": total_load_mwh,
+        "renewable_generation_mwh": renewable_generation_mwh,
+        "grid_purchase_mwh": grid_purchase_mwh,
+        "grid_export_mwh": grid_export_mwh,
+        "renewable_self_used_mwh": renewable_self_used_mwh,
+        "renewable_self_use_ratio": renewable_self_use_ratio,
+        "green_power_ratio": green_power_ratio,
+        "renewable_export_ratio": renewable_export_ratio,
+        "renewable_self_use_pass": renewable_self_use_ratio > 0.60,
+        "green_power_pass": green_power_ratio > 0.30,
+        "renewable_export_pass": renewable_export_ratio < 0.20,
+    }
