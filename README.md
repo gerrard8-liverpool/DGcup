@@ -1275,98 +1275,7 @@ outputs/figures/
 
 ---
 
-## 13. 脚本运行方式
-
-安装依赖：
-
-~~~bash
-pip install -r requirements.txt
-~~~
-
-运行问题一：
-
-~~~bash
-python scripts/run_q1_baseline.py
-~~~
-
-运行问题二：
-
-~~~bash
-python scripts/run_q2_discrete.py
-~~~
-
-运行问题三：
-
-~~~bash
-python scripts/run_q3_continuous.py
-~~~
-
-运行完成后生成：
-
-~~~text
-outputs/tables/q1_hourly_results.csv
-outputs/tables/q1_summary.csv
-outputs/figures/q1_power_balance.png
-outputs/figures/q1_grid_interaction.png
-outputs/figures/q1_green_indicators.png
-outputs/figures/q1_cost_breakdown.png
-
-outputs/tables/q2_typical_summary.csv
-outputs/tables/q2_typical_hourly_dispatch.csv
-outputs/tables/q2_all_scenarios_summary.csv
-outputs/tables/q2_all_scenarios_hourly_dispatch.csv
-outputs/tables/q2_annual_summary.csv
-
-outputs/figures/q2_typical_schedule_gantt.png
-outputs/figures/q2_typical_cost_vs_production.png
-outputs/figures/q2_typical_green_indicators.png
-outputs/figures/q2_scenario_cost_boxplot.png
-outputs/figures/q2_satisfaction_stacked_bar.png
-outputs/figures/q2_annual_avg_cost.png
-
-outputs/tables/q3_all_scenarios_hourly_dispatch.csv
-outputs/tables/q3_all_scenarios_summary.csv
-outputs/tables/q3_annual_summary.csv
-outputs/tables/q3_vs_q2_comparison.csv
-
-outputs/figures/q3_representative_dispatch_curve.png
-outputs/figures/q3_scenario_cost_boxplot.png
-outputs/figures/q3_satisfaction_stacked_bar.png
-outputs/figures/q3_annual_avg_cost.png
-outputs/figures/q3_vs_q2_cost_reduction.png
-outputs/figures/q3_vs_q2_grid_interaction.png
-~~~
-
----
-
-## 14. 当前进度
-
-- [x] 项目结构初始化
-- [x] 原始附件数据本地放置
-- [x] 问题一 Excel 数据读取
-- [x] 问题一小时级功率平衡计算
-- [x] 问题一绿电直连指标计算
-- [x] 问题一吨氨成本计算
-- [x] 问题一论文级图像输出
-- [x] 问题二离散制氨调度优化
-- [x] 问题三连续制氨调度优化
-- [ ] 问题四离网运行与储能配置优化
-- [x] 24 场景全年统计分析
-- [ ] 最终论文结果整理
-
----
-
-## 15. 建模原则
-
-本项目后续建模遵循以下原则：
-
-1. **统一功率平衡口径**：所有问题均基于同一套电力平衡关系进行扩展；
-2. **统一成本口径**：吨氨成本的组成项保持一致，便于不同问题横向比较；
-3. **统一政策指标口径**：绿电直连指标依据发改能源〔2025〕650 号政策表述定义，并在 Q1–Q4 中保持同一计算口径；
-4. **先算准，再优化**：问题一作为基准运行方案，后续问题二、三、四均与其对比；
-5. **图像服务于结论**：所有图像不仅展示数值，还要解释购电、上网、绿电指标和吨氨成本变化的原因。
-
-## 15. 问题四：离网运行与储能配置优化
+## 13. 问题四：离网运行与储能配置优化
 
 问题四进一步将系统从联网模式扩展到离网模式。与问题一至问题三不同，离网模式下不允许从外部电网购电，也不允许余电上网，因此电网不再作为系统功率平衡的缓冲资源。此时，风光出力、常规负荷、制氢氨负荷和储能之间的时序匹配成为核心矛盾。
 
@@ -1698,7 +1607,7 @@ python scripts/run_q4_storage.py
 
 ---
 
-## 16. 运行方式
+## 14. 运行方式
 
 安装依赖：
 
@@ -1729,7 +1638,7 @@ outputs/figures/
 
 ---
 
-## 17. 建模原则
+## 15. 建模原则
 
 本项目遵循以下原则：
 
