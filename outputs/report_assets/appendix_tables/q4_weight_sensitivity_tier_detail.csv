@@ -1,0 +1,22 @@
+﻿tier,capacity_mwh,interpretation,case_name
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,base
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,base
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,base
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,unserved_penalty_0p5
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,unserved_penalty_0p5
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,unserved_penalty_0p5
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,unserved_penalty_2p0
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,unserved_penalty_2p0
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,unserved_penalty_2p0
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,production_reward_0p8
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,production_reward_0p8
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,production_reward_0p8
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,production_reward_1p2
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,production_reward_1p2
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,production_reward_1p2
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,curtailment_penalty_0p5
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,curtailment_penalty_0p5
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,curtailment_penalty_0p5
+economic_entry,110.0,累计收益拐点区间下界，代表储能由快速增益段接近拐点区间的起点。,curtailment_penalty_2p0
+balanced_knee_recommendation,115.0,年制氨量提升与弃电削减两类收益共同支持的深度消纳型技术经济拐点容量。,curtailment_penalty_2p0
+technical_saturation,150.0,年制氨量达到最大提升 99% 的最小容量，代表接近技术饱和。,curtailment_penalty_2p0
