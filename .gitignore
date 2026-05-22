@@ -33,3 +33,6 @@ data/processed/
 Thumbs.db
 
 data/raw/
+
+.idea/
+outputs/
