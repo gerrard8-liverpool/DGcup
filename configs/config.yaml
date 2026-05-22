@@ -1,0 +1,26 @@
+﻿project:
+  name: DGcup_A
+  problem: green_power_hydrogen_ammonia_park
+
+paths:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  output_dir: outputs
+  figure_dir: outputs/figures
+  table_dir: outputs/tables
+
+time:
+  hours_per_day: 24
+  scenario_days: 15
+
+capacity:
+  base_ammonia_tpd: 36
+  expanded_ammonia_tpd: 72
+  wind_mw: 40
+  pv_mw: 64
+  base_load_peak_mw: 6
+
+policy_thresholds:
+  renewable_self_use_ratio_min: 0.60
+  green_power_ratio_min: 0.30
+  renewable_export_ratio_max: 0.20

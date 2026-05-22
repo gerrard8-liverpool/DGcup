@@ -1,12 +1,8 @@
-numpy
+﻿numpy
 pandas
-scipy
-scikit-learn
-matplotlib
-seaborn
 openpyxl
-tqdm
+matplotlib
+scipy
+cvxpy
 pyyaml
-xgboost
-lightgbm
-statsmodels
+tqdm

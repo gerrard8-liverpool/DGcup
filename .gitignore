@@ -1,68 +1,33 @@
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Virtual environments
+﻿# Python
 .venv/
 venv/
-env/
-ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 
-# PyCharm
+# IDE
 .idea/
+.vscode/
 
 # Jupyter
 .ipynb_checkpoints/
 
-# Data files
-data/raw/*
-data/processed/*
-data/external/*
-
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-!data/external/.gitkeep
+# Cache
+.pytest_cache/
+.mypy_cache/
 
 # Outputs
-outputs/figures/*
-outputs/tables/*
-outputs/models/*
-outputs/submissions/*
+outputs/
+data/processed/
 
-!outputs/figures/.gitkeep
-!outputs/tables/.gitkeep
-!outputs/models/.gitkeep
-!outputs/submissions/.gitkeep
-
-# Model files
-*.pkl
-*.joblib
-*.pt
-*.pth
-*.ckpt
-*.onnx
-
-# Large data files
-*.csv
-*.xlsx
-*.xls
-*.parquet
-*.feather
-*.npy
-*.npz
-*.mat
-*.zip
-*.rar
-*.7z
-
-# Logs
+# Reports build files
+*.aux
 *.log
-logs/
+*.out
+*.toc
+*.synctex.gz
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
-
-# Environment variables
-.env
