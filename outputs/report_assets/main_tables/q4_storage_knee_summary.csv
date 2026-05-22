@@ -1,0 +1,14 @@
+﻿method,knee_capacity_mwh,score,bic,slope_before,slope_after,slope_ratio,benefit_indicator,benefit_name,recommended_interval_lower_mwh,recommended_interval_upper_mwh
+chord_distance,115.0,0.3810689589704055,,,,,production_gain_ton,年制氨量提升,,
+normalized_benefit_cost_balance,115.0,0.420100757400943,,,,,production_gain_ton,年制氨量提升,,
+piecewise_bic,110.0,,311.18480471127316,5.875698403310953,0.5309729812340084,0.0903676371365156,production_gain_ton,年制氨量提升,,
+saturation_99pct,150.0,,,,,,production_gain_ton,年制氨量提升,,
+chord_distance,115.0,0.3797857309341479,,,,,curtailment_reduction_mwh,弃电削减量,,
+normalized_benefit_cost_balance,115.0,0.4188175293646854,,,,,curtailment_reduction_mwh,弃电削减量,,
+piecewise_bic,110.0,,557.8781221144934,101.09314875425167,9.680193951558282,0.09575519281815982,curtailment_reduction_mwh,弃电削减量,,
+saturation_99pct,150.0,,,,,,curtailment_reduction_mwh,弃电削减量,,
+chord_distance,115.0,0.38106895897040627,,,,,capacity_utilization_gain_pct,产能利用率提升,,
+normalized_benefit_cost_balance,115.0,0.42010075740094377,,,,,capacity_utilization_gain_pct,产能利用率提升,,
+piecewise_bic,110.0,,-188.99919209175752,0.022668589518946586,0.0020485068720447848,0.09036763713651555,capacity_utilization_gain_pct,产能利用率提升,,
+saturation_99pct,150.0,,,,,,capacity_utilization_gain_pct,产能利用率提升,,
+final_consensus_interval,115.0,,,,,,production_and_curtailment,年制氨量提升与弃电削减,110.0,115.0

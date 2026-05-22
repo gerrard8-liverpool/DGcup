@@ -52,3 +52,16 @@ outputs/**/*.npz
 
 # Keep empty directory markers only if needed
 !.gitkeep
+
+# Generated detailed output files that are archived separately
+outputs/tables/robustness_scan_*.csv
+outputs/tables/sensitivity_scan_*.csv
+outputs/tables/*hourly*.csv
+outputs/tables/*hourly_dispatch*.csv
+outputs/tables/q4_storage_capacity_scan_hourly.csv
+outputs/tables/q4_storage_capacity_scan_summary.csv
+outputs/tables/q4_storage_capacity_annual_scan.csv
+outputs/figures/sensitivity_*.png
+outputs/figures/q4_storage_benefit_per_cost.png
+outputs/figures/q4_storage_capacity_scan.png
+outputs/figures/q4_storage_annual_tradeoff.png
