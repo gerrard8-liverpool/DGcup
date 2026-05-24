@@ -1,0 +1,6 @@
+﻿production_ton,scenario_count,全满足,部分满足,全不满足,all_satisfied_days,partially_satisfied_days,none_satisfied_days
+72.0,24,18,6,0,270,90,0
+63.0,24,20,4,0,300,60,0
+54.0,24,16,8,0,240,120,0
+45.0,24,16,8,0,240,120,0
+36.0,24,10,14,0,150,210,0
