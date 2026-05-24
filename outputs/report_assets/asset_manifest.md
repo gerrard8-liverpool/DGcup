@@ -50,8 +50,13 @@
 - **AF8** `outputs/report_assets/appendix_figures/q2_typical_schedule_gantt.png`：Q2 典型场景开机时段。展示离散调度时段选择。 状态：OK
 - **AF9** `outputs/report_assets/appendix_figures/q2_inertia_best_cost.png`：Q2 运行惯性约束下的最优成本。展示启动损耗与最小连续运行时间对成本的影响。 状态：OK
 - **AT1** `outputs/report_assets/appendix_tables/q2_inertia_typical_summary.csv`：Q2 增强验证典型日汇总。Q2 运行惯性增强验证典型日结果。 状态：OK
+- **AT10** `outputs/report_assets/appendix_tables/q3_all_scenarios_summary.csv`：Q3 24 场景连续调节汇总。用于回答问题三第一小问，包含每个风光场景下调度结果、绿电指标和吨氨成本。 状态：OK
+- **AT11** `outputs/report_assets/appendix_tables/q3_all_scenarios_hourly_dispatch.csv`：Q3 24 场景小时级连续调节方案。用于回答问题三第一小问，展示各场景连续制氨功率调度方案。 状态：OK
 - **AT2** `outputs/report_assets/appendix_tables/q2_inertia_annual_summary.csv`：Q2 增强验证年化汇总。Q2 启动损耗和最小连续运行时间组合下的年化结果。 状态：OK
 - **AT3** `outputs/report_assets/appendix_tables/q2_inertia_vs_baseline.csv`：Q2 增强验证相对基准对比。Q2 增强模型相对原模型的成本增量。 状态：OK
 - **AT4** `outputs/report_assets/appendix_tables/robustness_case_summary.csv`：鲁棒性检验逐案例结果。随机扰动、场景留一、压力测试逐案例结果。 状态：OK
 - **AT5** `outputs/report_assets/appendix_tables/q4_weight_sensitivity_knee_detail.csv`：Q4 目标权重敏感性拐点明细。记录不同权重扰动下各类拐点识别方法的结果。 状态：OK
 - **AT6** `outputs/report_assets/appendix_tables/q4_weight_sensitivity_tier_detail.csv`：Q4 目标权重敏感性容量层级明细。记录不同权重扰动下经济入口、工程推荐和技术饱和容量。 状态：OK
+- **AT7** `outputs/report_assets/appendix_tables/q1_hourly_results.csv`：Q1 小时级功率平衡结果。用于回答问题一第一小问，每小时负荷、风光出力、购电和上网电量。 状态：OK
+- **AT8** `outputs/report_assets/appendix_tables/q2_all_scenarios_summary.csv`：Q2 24 场景离散调度汇总。用于问题二第二小问和问题三对比，包含各场景成本、购售电和绿电指标。 状态：OK
+- **AT9** `outputs/report_assets/appendix_tables/q2_all_scenarios_hourly_dispatch.csv`：Q2 24 场景小时级离散调度。用于附录展示各风光场景下离散开停机方案。 状态：OK

@@ -22,11 +22,16 @@ AF7,figure,appendix,q2_typical_green_indicators.png,outputs/report_assets/append
 AF8,figure,appendix,q2_typical_schedule_gantt.png,outputs/report_assets/appendix_figures/q2_typical_schedule_gantt.png,Q2 典型场景开机时段,展示离散调度时段选择。,OK
 AF9,figure,appendix,q2_inertia_best_cost.png,outputs/report_assets/appendix_figures/q2_inertia_best_cost.png,Q2 运行惯性约束下的最优成本,展示启动损耗与最小连续运行时间对成本的影响。,OK
 AT1,table,appendix,q2_inertia_typical_summary.csv,outputs/report_assets/appendix_tables/q2_inertia_typical_summary.csv,Q2 增强验证典型日汇总,Q2 运行惯性增强验证典型日结果。,OK
+AT10,table,appendix,q3_all_scenarios_summary.csv,outputs/report_assets/appendix_tables/q3_all_scenarios_summary.csv,Q3 24 场景连续调节汇总,用于回答问题三第一小问，包含每个风光场景下调度结果、绿电指标和吨氨成本。,OK
+AT11,table,appendix,q3_all_scenarios_hourly_dispatch.csv,outputs/report_assets/appendix_tables/q3_all_scenarios_hourly_dispatch.csv,Q3 24 场景小时级连续调节方案,用于回答问题三第一小问，展示各场景连续制氨功率调度方案。,OK
 AT2,table,appendix,q2_inertia_annual_summary.csv,outputs/report_assets/appendix_tables/q2_inertia_annual_summary.csv,Q2 增强验证年化汇总,Q2 启动损耗和最小连续运行时间组合下的年化结果。,OK
 AT3,table,appendix,q2_inertia_vs_baseline.csv,outputs/report_assets/appendix_tables/q2_inertia_vs_baseline.csv,Q2 增强验证相对基准对比,Q2 增强模型相对原模型的成本增量。,OK
 AT4,table,appendix,robustness_case_summary.csv,outputs/report_assets/appendix_tables/robustness_case_summary.csv,鲁棒性检验逐案例结果,随机扰动、场景留一、压力测试逐案例结果。,OK
 AT5,table,appendix,q4_weight_sensitivity_knee_detail.csv,outputs/report_assets/appendix_tables/q4_weight_sensitivity_knee_detail.csv,Q4 目标权重敏感性拐点明细,记录不同权重扰动下各类拐点识别方法的结果。,OK
 AT6,table,appendix,q4_weight_sensitivity_tier_detail.csv,outputs/report_assets/appendix_tables/q4_weight_sensitivity_tier_detail.csv,Q4 目标权重敏感性容量层级明细,记录不同权重扰动下经济入口、工程推荐和技术饱和容量。,OK
+AT7,table,appendix,q1_hourly_results.csv,outputs/report_assets/appendix_tables/q1_hourly_results.csv,Q1 小时级功率平衡结果,用于回答问题一第一小问，每小时负荷、风光出力、购电和上网电量。,OK
+AT8,table,appendix,q2_all_scenarios_summary.csv,outputs/report_assets/appendix_tables/q2_all_scenarios_summary.csv,Q2 24 场景离散调度汇总,用于问题二第二小问和问题三对比，包含各场景成本、购售电和绿电指标。,OK
+AT9,table,appendix,q2_all_scenarios_hourly_dispatch.csv,outputs/report_assets/appendix_tables/q2_all_scenarios_hourly_dispatch.csv,Q2 24 场景小时级离散调度,用于附录展示各风光场景下离散开停机方案。,OK
 F1,figure,main,q1_power_balance.png,outputs/report_assets/main_figures/q1_power_balance.png,Q1 典型日功率平衡,展示基准运行下风光出力、负荷与源荷错配。,OK
 F2,figure,main,q2_typical_cost_vs_production.png,outputs/report_assets/main_figures/q2_typical_cost_vs_production.png,Q2 离散调度吨氨成本随日产量变化,展示离散调度下不同日产量的成本变化。,OK
 F3,figure,main,q2_inertia_cost_increase_heatmap.png,outputs/report_assets/main_figures/q2_inertia_cost_increase_heatmap.png,Q2 运行惯性增强验证成本增量热力图,检验启动损耗和最小连续运行时间对 Q2 结论的影响。,OK
