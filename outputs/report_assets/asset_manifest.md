@@ -4,8 +4,9 @@
 ## Main Assets
 
 - **F1** `outputs/report_assets/main_figures/q1_power_balance.png`：Q1 典型日功率平衡。展示基准运行下风光出力、负荷与源荷错配。 状态：OK
-- **F10** `outputs/report_assets/main_figures/q3_paper_scenario_min_cost_heatmap.png`：Q3 24 场景最小成本方案热力图。正文主图，用于回答 24 种风光组合场景下每种场景的最小成本方案、对应日产量和绿电指标满足类型。 状态：OK
+- **F10** `C:/Users/Gerra/PycharmProjects/DGcup/outputs/report_assets/main_figures/q3_paper_scenario_min_cost_heatmap.png`：Q3 24 场景最小吨氨成本方案热力图。正文主图，格内展示最小吨氨成本、对应日产量和绿电直连指标满足类型。 状态：OK
 - **F11** `outputs/report_assets/main_figures/q3_paper_cost_green_scatter.png`：Q3 吨氨成本与绿电比例关系散点图。正文主图，用于解释连续调节下吨氨成本与总用电量绿电比例之间的关系。 状态：OK
+- **F12** `C:/Users/Gerra/PycharmProjects/DGcup/outputs/report_assets/main_figures/q3_vs_q2_multi_metric_comparison.png`：Q3 相对 Q2 的多指标变化图。正文主图，用于回答第三小问中吨氨成本、购电、上网、绿电比例、上网比例等指标变化。 状态：OK
 - **F2** `outputs/report_assets/main_figures/q2_typical_cost_vs_production.png`：Q2 离散调度吨氨成本随日产量变化。展示离散调度下不同日产量的成本变化。 状态：OK
 - **F3** `outputs/report_assets/main_figures/q2_inertia_cost_increase_heatmap.png`：Q2 运行惯性增强验证成本增量热力图。检验启动损耗和最小连续运行时间对 Q2 结论的影响。 状态：OK
 - **F4** `outputs/report_assets/main_figures/q3_vs_q2_cost_reduction.png`：Q3 连续调节相对 Q2 的降本效果。展示连续调节对离散调度的成本改善。 状态：OK
@@ -20,6 +21,8 @@
 - **T12** `outputs/report_assets/main_tables/q4_weight_sensitivity_summary.csv`：Q4 目标权重敏感性汇总。用于证明 Q4 工程推荐容量对目标权重扰动具有稳定性。 状态：OK
 - **T13** `outputs/report_assets/main_tables/q3_paper_annual_summary_compact.csv`：Q3 连续调节年化压缩汇总表。正文主表，用于展示不同日产量下全年总成本、吨氨成本、绿电指标、三类满足天数和平均运行指标。 状态：OK
 - **T14** `outputs/report_assets/main_tables/q3_paper_satisfaction_matrix.csv`：Q3 绿电直连指标满足类型统计表。正文主表，用于统计不同日产量下全满足、部分满足、全不满足场景数及对应年化天数。 状态：OK
+- **T15** `C:/Users/Gerra/PycharmProjects/DGcup/outputs/report_assets/main_tables/q3_paper_min_cost_annual_classification.csv`：Q3 最小成本方案年化分类汇总表。正文主表，按全满足、部分满足、全不满足统计场景数、全年天数、年化产量和吨氨成本。 状态：OK
+- **T16** `C:/Users/Gerra/PycharmProjects/DGcup/outputs/report_assets/main_tables/q3_vs_q2_multi_metric_delta.csv`：Q3 相对 Q2 的多指标变化表。正文或附录表，量化连续调节相对离散启停的成本、购电、上网和绿电指标变化。 状态：OK
 - **T2** `outputs/report_assets/main_tables/q2_typical_summary.csv`：Q2 典型场景结果。用于 Q2 典型场景结果。 状态：OK
 - **T3** `outputs/report_assets/main_tables/q2_annual_summary.csv`：Q2 年化结果。用于 Q2 年化评价。 状态：OK
 - **T4** `outputs/report_assets/main_tables/q2_inertia_best_by_case.csv`：Q2 运行惯性增强验证最优结果。用于证明 Q2 结论对启动损耗和最小连续运行时间稳定。 状态：OK
@@ -69,3 +72,4 @@
 - **AT12** `outputs/report_assets/appendix_tables/q3_paper_scenario_min_cost_summary.csv`：Q3 24 场景最小成本方案明细表。附录表，每个风光场景保留一行最小吨氨成本方案。 状态：OK
 - **AT13** `outputs/report_assets/appendix_tables/q3_paper_scenario_compliance_then_cost_summary.csv`：Q3 24 场景先达标后降本方案明细表。附录表，按优先满足绿电指标、再最小化吨氨成本的规则选择方案。 状态：OK
 - **AT14** `outputs/report_assets/appendix_tables/q3_paper_all_candidates_summary.csv`：Q3 多日产量候选方案压缩表。附录表，包含 24 场景与多个日产量组合下的压缩指标结果。 状态：OK
+- **AT15** `C:/Users/Gerra/PycharmProjects/DGcup/outputs/report_assets/appendix_tables/q3_paper_production_classification_annual.csv`：Q3 不同日产量下满足类型年化分类表。附录表，用于补充说明不同日产量的全满足、部分满足、全不满足结构。 状态：OK
