@@ -405,6 +405,45 @@ q_{\mathrm{NH3}}(t)=3u_t
 
 ---
 
+## Q3 论文友好型场景汇总与图表说明
+
+为避免在论文正文中展开 24 种风光场景 × 多个日产量 × 逐小时调度结果，本文将 Q3 连续调节结果整理为“正文主图表 + 附录支撑表”的两级结构。正文用于展示核心统计规律，附录用于保留完整场景和小时级调度结果。
+
+### Q3 正文主图
+
+<p align="center">
+  <img src="outputs/figures/q3_paper_scenario_min_cost_heatmap.png" alt="Q3 Scenario Minimum Cost Heatmap" width="82%">
+</p>
+
+该热力图用于回答“24 种风光组合场景下每种场景的最小成本方案”。横轴为光伏场景，纵轴为风电场景，格内展示该场景下的最小吨氨成本、对应日产量和绿电指标满足类型。该图将原本几百行的逐小时调度结果压缩为 6×4 场景矩阵，适合放入论文正文。
+
+<p align="center">
+  <img src="outputs/figures/q3_paper_cost_green_scatter.png" alt="Q3 Cost Green Ratio Scatter" width="82%">
+</p>
+
+该散点图用于解释连续调节下吨氨成本与总用电量绿电比例之间的关系。点的颜色表示绿电直连指标满足类型，点大小表示日产量水平。该图说明低成本方案与绿电指标满足之间并不完全一致，连续调节需要在成本控制与绿电合规之间进行权衡。
+
+### Q3 正文主表
+
+| 表格 | 用途 |
+|---|---|
+| `outputs/tables/q3_paper_annual_summary_compact.csv` | 展示不同日产量下全年总成本、吨氨成本、绿电指标、满足天数和平均运行指标 |
+| `outputs/tables/q3_paper_satisfaction_matrix.csv` | 统计全满足、部分满足、全不满足三类场景数及年化天数 |
+| `outputs/tables/q3_vs_q2_comparison.csv` | 比较 Q3 连续调节相对 Q2 离散启停在成本、购电、售电和绿电指标上的变化 |
+
+### Q3 附录支撑表
+
+| 表格 | 用途 |
+|---|---|
+| `outputs/tables/q3_paper_scenario_min_cost_summary.csv` | 每个风光场景一行的最小成本方案 |
+| `outputs/tables/q3_paper_scenario_compliance_then_cost_summary.csv` | 先满足绿电指标、再选择低成本方案的补充决策口径 |
+| `outputs/tables/q3_paper_all_candidates_summary.csv` | 24 场景 × 多日产量的压缩候选方案 |
+| `outputs/tables/q3_all_scenarios_summary.csv` | Q3 连续调节原始 24 场景汇总 |
+| `outputs/tables/q3_all_scenarios_hourly_dispatch.csv` | Q3 完整逐小时连续调节方案，用于附录或支撑材料 |
+
+论文正文建议写法：正文只展示年化汇总表、满足类型统计表、24 场景热力图和成本—绿电比例散点图；完整逐小时调度方案放入附录或项目支撑材料。这样既满足题目对“24 种场景调度方案、绿电指标、吨氨成本”的要求，又避免正文被大量原始数据淹没。
+
+
 ## Q4 储能容量选择准则
 
 Q4 的核心不是简单选择某个离散容量点，而是在“产量提升、弃电削减、成本上升”之间识别边际收益递减拐点。为避免结论口径混乱，本文将储能容量划分为四类含义不同的容量。
