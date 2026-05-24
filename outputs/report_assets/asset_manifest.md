@@ -19,17 +19,17 @@
 - **T3** `outputs/report_assets/main_tables/q2_annual_summary.csv`：Q2 年化结果。用于 Q2 年化评价。 状态：OK
 - **T4** `outputs/report_assets/main_tables/q2_inertia_best_by_case.csv`：Q2 运行惯性增强验证最优结果。用于证明 Q2 结论对启动损耗和最小连续运行时间稳定。 状态：OK
 - **T5** `outputs/report_assets/main_tables/q3_annual_summary.csv`：Q3 年化结果。用于 Q3 年化评价。 状态：OK
-- **T6** `outputs/report_assets/main_tables/q3_vs_q2_comparison.csv`：Q3 与 Q2 成本及绿电指标对比表。正文主表，用于回答问题三第三小问，比较连续调节相对离散启停在成本、购售电和绿电指标上的变化。 状态：OK
+- **T6** `outputs/report_assets/main_tables/q3_vs_q2_comparison.csv`：Q3 与 Q2 原始对比表。正文主表，保留 Q3 与 Q2 原始对比结果，便于论文中引用具体数值。 状态：OK
 - **T7** `outputs/report_assets/main_tables/q4_storage_capacity_tiers.csv`：Q4 储能容量层级。用于说明拐点容量、推荐容量和饱和容量。 状态：OK
 - **T8** `outputs/report_assets/main_tables/q4_storage_knee_summary.csv`：Q4 拐点识别汇总。用于证明储能推荐容量。 状态：OK
 - **T9** `outputs/report_assets/main_tables/q4_storage_capacity_fine_scan.csv`：Q4 细步长容量扫描。用于支撑储能容量拐点分析。 状态：OK
 - **T10** `outputs/report_assets/main_tables/sensitivity_summary.csv`：敏感性分析汇总。用于说明参数扰动下结论稳定。 状态：OK
 - **T11** `outputs/report_assets/main_tables/robustness_overview.csv`：鲁棒性检验总览。用于说明随机扰动、场景留一和压力测试下结论稳定。 状态：OK
 - **T12** `outputs/report_assets/main_tables/q4_weight_sensitivity_summary.csv`：Q4 目标权重敏感性汇总。用于证明 Q4 工程推荐容量对目标权重扰动具有稳定性。 状态：OK
-- **T13** `outputs/report_assets/main_tables/q3_paper_annual_summary_compact.csv`：Q3 连续调节年化压缩汇总表。正文主表，用于展示不同日产量下全年总成本、吨氨成本、绿电指标、三类满足天数和平均运行指标。 状态：OK
-- **T14** `outputs/report_assets/main_tables/q3_paper_satisfaction_matrix.csv`：Q3 绿电直连指标满足类型统计表。正文主表，用于统计不同日产量下全满足、部分满足、全不满足场景数及对应年化天数。 状态：OK
-- **T15** `outputs/report_assets/main_tables/q3_paper_min_cost_annual_classification.csv`：Q3 最小成本方案年化分类汇总表。正文主表，按全满足、部分满足、全不满足统计场景数、全年天数、年化产量和加权吨氨成本。 状态：OK
-- **T16** `outputs/report_assets/main_tables/q3_vs_q2_multi_metric_delta.csv`：Q3 相对 Q2 的多指标变化表。正文或附录表，量化连续调节相对离散启停在成本、购电、上网和绿电指标上的变化。 状态：OK
+- **T13** `outputs/report_assets/main_tables/q3_paper_annual_summary_compact.csv`：Q3 不同日产量年化压缩汇总表。正文主表，展示不同日产量下全年总成本、吨氨成本、购售电量和平均绿电指标。 状态：OK
+- **T14** `outputs/report_assets/main_tables/q3_paper_satisfaction_matrix.csv`：Q3 不同日产量满足类型统计表。正文主表，统计不同日产量下全满足、部分满足、全不满足三类场景数及年化天数。 状态：OK
+- **T15** `outputs/report_assets/main_tables/q3_paper_min_cost_annual_classification.csv`：Q3 最小成本方案年化分类汇总表。正文主表，按全满足、部分满足、全不满足统计最小成本方案对应的场景数、全年天数、年化制氨量和加权吨氨成本。 状态：OK
+- **T16** `outputs/report_assets/main_tables/q3_vs_q2_multi_metric_delta.csv`：Q3 相对 Q2 的多指标变化表。正文主表，量化 Q3 相对 Q2 在成本、购电、上网、自发自用率、绿电比例和上网比例上的变化。 状态：OK
 
 ## Appendix Assets
 
@@ -55,9 +55,9 @@
 - **AF20** `outputs/report_assets/appendix_figures/q4_storage_knee_normalized_benefit.png`：Q4 储能收益—成本标准化对比。展示收益与成本的标准化关系。 状态：OK
 - **AF21** `outputs/report_assets/appendix_figures/q4_storage_production_bar.png`：Q4 有储能 24 场景制氨量。展示储能对各场景制氨量的提升。 状态：OK
 - **AF22** `outputs/report_assets/appendix_figures/q4_wind_pv_utilization_improvement.png`：Q4 储能前后风光利用率对比。展示储能对风光消纳的改善。 状态：OK
-- **AF23** `outputs/report_assets/appendix_figures/q3_paper_cost_export_scatter.png`：Q3 吨氨成本与新能源上网比例关系散点图。附录图，补充解释吨氨成本与新能源上网比例之间的关系。 状态：OK
+- **AF23** `outputs/report_assets/appendix_figures/q3_paper_cost_export_scatter.png`：Q3 吨氨成本与新能源上网比例关系散点图。附录图，补充展示吨氨成本与新能源上网比例关系。 状态：OK
 - **AF24** `outputs/report_assets/appendix_figures/q3_paper_scenario_min_cost_dotplot.png`：Q3 24 场景最小成本方案点图。附录图，作为热力图的补充展示。 状态：OK
-- **AF25** `outputs/report_assets/appendix_figures/q3_paper_cost_green_scatter.png`：Q3 吨氨成本与绿电比例关系散点图。附录图，补充解释吨氨成本与总用电量绿电比例之间的关系。 状态：OK
+- **AF25** `outputs/report_assets/appendix_figures/q3_paper_cost_green_scatter.png`：Q3 吨氨成本与绿电比例关系散点图。附录图，补充展示吨氨成本与总用电量绿电比例关系。 状态：OK
 - **AT1** `outputs/report_assets/appendix_tables/q2_inertia_typical_summary.csv`：Q2 增强验证典型日汇总。Q2 运行惯性增强验证典型日结果。 状态：OK
 - **AT2** `outputs/report_assets/appendix_tables/q2_inertia_annual_summary.csv`：Q2 增强验证年化汇总。Q2 启动损耗和最小连续运行时间组合下的年化结果。 状态：OK
 - **AT3** `outputs/report_assets/appendix_tables/q2_inertia_vs_baseline.csv`：Q2 增强验证相对基准对比。Q2 增强模型相对原模型的成本增量。 状态：OK
@@ -71,5 +71,5 @@
 - **AT11** `outputs/report_assets/appendix_tables/q3_all_scenarios_hourly_dispatch.csv`：Q3 24 场景逐小时连续调节方案表。附录表，用于支撑问题三第一小问的完整逐小时调度方案。 状态：OK
 - **AT12** `outputs/report_assets/appendix_tables/q3_paper_scenario_min_cost_summary.csv`：Q3 24 场景最小成本方案明细表。附录表，每个风光场景保留一行最小吨氨成本方案。 状态：OK
 - **AT13** `outputs/report_assets/appendix_tables/q3_paper_scenario_compliance_then_cost_summary.csv`：Q3 24 场景先达标后降本方案明细表。附录表，按优先满足绿电指标、再最小化吨氨成本的规则选择方案。 状态：OK
-- **AT14** `outputs/report_assets/appendix_tables/q3_paper_all_candidates_summary.csv`：Q3 多日产量候选方案压缩表。附录表，包含 24 场景与多个日产量组合下的压缩指标结果。 状态：OK
-- **AT15** `outputs/report_assets/appendix_tables/q3_paper_production_classification_annual.csv`：Q3 不同日产量下满足类型年化分类表。附录表，用于补充说明不同日产量下全满足、部分满足、全不满足结构。 状态：OK
+- **AT14** `outputs/report_assets/appendix_tables/q3_paper_all_candidates_summary.csv`：Q3 多日产量候选方案压缩表。附录表，包含 24 场景与多个日产量组合下的候选方案压缩结果。 状态：OK
+- **AT15** `outputs/report_assets/appendix_tables/q3_paper_production_classification_annual.csv`：Q3 不同日产量满足类型年化分类表。附录表，补充说明不同日产量下全满足、部分满足、全不满足结构。 状态：OK

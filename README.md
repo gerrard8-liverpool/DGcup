@@ -413,18 +413,18 @@ q_{\mathrm{NH3}}(t)=3u_t
 ### Q3 第一小问：24 场景最小成本方案
 
 <p align="center">
-  <img src="outputs/figures/q3_paper_scenario_min_cost_heatmap.png" alt="Q3 Scenario Minimum Cost Heatmap" width="82%">
+  <img src="outputs/report_assets/main_figures/q3_paper_scenario_min_cost_heatmap.png" alt="Q3 Scenario Minimum Cost Heatmap" width="82%">
 </p>
 
 该热力图用于回答“24 种风光组合场景下每种场景的最小成本方案”。横轴为光伏场景，纵轴为风电场景，颜色表示该场景下的最小吨氨成本；格内依次给出最小吨氨成本、对应日产量和绿电直连指标满足类型。该图将原本几百行的逐小时调度结果压缩为 6×4 场景矩阵，适合放入论文正文。
 
-配套正文主表：
+#### 最小成本方案年化分类汇总
 
-| 表格 | 用途 |
-|---|---|
-| `outputs/tables/q3_paper_min_cost_annual_classification.csv` | 按全满足、部分满足、全不满足统计最小成本方案对应的场景数、全年天数、年化制氨量和加权吨氨成本 |
-| `outputs/tables/q3_paper_annual_summary_compact.csv` | 展示不同日产量下全年总成本、吨氨成本、购售电量和平均绿电指标 |
-| `outputs/tables/q3_paper_satisfaction_matrix.csv` | 统计不同日产量下全满足、部分满足、全不满足三类场景数及年化天数 |
+| 分类 | 场景数 | 年化天数 | 代表日产量 / t·day⁻¹ | 年化制氨量 / t | 加权吨氨成本 / 元·t⁻¹ |
+|---|---:|---:|---:|---:|---:|
+| 全满足 | 10 | 150 | 36 | 5400 | 5497.37 |
+| 部分满足 | 14 | 210 | 36 | 7560 | 3416.45 |
+| 合计 | 24 | 360 | - | 12960 | 4283.50 |
 
 论文建议写法：
 
@@ -433,35 +433,51 @@ q_{\mathrm{NH3}}(t)=3u_t
 ### Q3 第三小问：连续调节相对离散启停的多指标变化
 
 <p align="center">
-  <img src="outputs/figures/q3_vs_q2_multi_metric_comparison.png" alt="Q3 vs Q2 Multi Metric Comparison" width="92%">
+  <img src="outputs/report_assets/main_figures/q3_vs_q2_multi_metric_comparison.png" alt="Q3 vs Q2 Multi Metric Comparison" width="92%">
 </p>
 
 该图用于回答“与问题二结果相比，吨氨成本、绿电直连指标等如何变化”。图中从六个维度比较 Q2 离散启停与 Q3 连续调节：年均吨氨成本、平均日购电量、平均日上网电量、新能源自发自用率、总用电量绿电比例和新能源上网比例。它比单独比较成本或绿电比例更直观，能够说明连续功率调节改变了园区与电网之间的能量交换结构。
 
-配套正文表：
+#### Q3 相对 Q2 的多指标变化
 
-| 表格 | 用途 |
-|---|---|
-| `outputs/tables/q3_vs_q2_multi_metric_delta.csv` | 量化 Q3 相对 Q2 在成本、购电、上网、自发自用率、绿电比例和上网比例上的变化 |
-| `outputs/tables/q3_vs_q2_comparison.csv` | 保留原始 Q3 与 Q2 对比结果，便于论文中引用具体数值 |
+| 日产量 / t·day⁻¹ | 吨氨成本变化 / 元·t⁻¹ | 购电量变化 / MWh | 上网电量变化 / MWh | 自发自用率变化 / pct | 绿电比例变化 / pct | 上网比例变化 / pct |
+|---:|---:|---:|---:|---:|---:|---:|
+| 36 | -302.91 | -46.73 | -46.73 | +14.97 | +8.36 | -14.97 |
+| 45 | -292.82 | -52.22 | -52.22 | +15.43 | +7.64 | -15.43 |
+| 54 | -251.04 | -36.83 | -36.83 | +9.95 | +4.56 | -9.95 |
+| 63 | -110.56 | -19.72 | -19.72 | +4.31 | +2.12 | -4.31 |
+| 72 | 0.00 | 0.00 | -0.00 | 0.00 | 0.00 | 0.00 |
 
 论文建议写法：
 
 > 与 Q2 离散启停相比，Q3 连续调节能够更细粒度地匹配风光波动，因此在多数日产量下降低吨氨成本、减少购电量和上网电量，并改善绿电直连指标。该结果说明连续功率调节不仅影响生产成本，也改变了园区与公共电网之间的能量交换方式。
 
-### Q3 附录支撑材料
+### Q3 正文主表与附录支撑材料
 
-| 图表 | 用途 |
-|---|---|
-| `outputs/tables/q3_paper_scenario_min_cost_summary.csv` | 每个风光场景一行的最小成本方案明细 |
-| `outputs/tables/q3_paper_production_classification_annual.csv` | 不同日产量下按全满足、部分满足、全不满足分类的年化统计 |
-| `outputs/tables/q3_paper_all_candidates_summary.csv` | 24 场景 × 多日产量的候选方案压缩结果 |
-| `outputs/tables/q3_all_scenarios_hourly_dispatch.csv` | 完整逐小时连续调节方案，用于支撑问题三第一小问 |
-| `outputs/figures/q3_paper_cost_green_scatter.png` | 附录图，补充展示吨氨成本与绿电比例关系 |
-| `outputs/figures/q3_paper_cost_export_scatter.png` | 附录图，补充展示吨氨成本与新能源上网比例关系 |
-| `outputs/figures/q3_paper_scenario_min_cost_dotplot.png` | 附录图，补充展示 24 场景最小成本方案点图 |
+正文建议优先使用：
 
-论文正文建议只放：24 场景热力图、年化分类汇总表、Q2 vs Q3 六指标对比图。完整逐小时调度方案与候选方案明细放入附录或项目支撑材料。
+| 类型 | 路径 | 用途 |
+|---|---|---|
+| 正文主图 | `outputs/report_assets/main_figures/q3_paper_scenario_min_cost_heatmap.png` | Q3 第一小问：24 场景最小成本方案 |
+| 正文主图 | `outputs/report_assets/main_figures/q3_vs_q2_multi_metric_comparison.png` | Q3 第三小问：Q2 与 Q3 多指标对比 |
+| 正文主表 | `outputs/report_assets/main_tables/q3_paper_min_cost_annual_classification.csv` | Q3 第一小问：最小成本方案年化分类汇总 |
+| 正文主表 | `outputs/report_assets/main_tables/q3_vs_q2_multi_metric_delta.csv` | Q3 第三小问：Q3 相对 Q2 的多指标变化 |
+| 正文主表 | `outputs/report_assets/main_tables/q3_paper_annual_summary_compact.csv` | 不同日产量下全年成本、购售电量和绿电指标 |
+| 正文主表 | `outputs/report_assets/main_tables/q3_paper_satisfaction_matrix.csv` | 不同日产量下全满足、部分满足、全不满足统计 |
+
+附录建议使用：
+
+| 类型 | 路径 | 用途 |
+|---|---|---|
+| 附录表 | `outputs/report_assets/appendix_tables/q3_paper_scenario_min_cost_summary.csv` | 每个风光场景一行的最小成本方案明细 |
+| 附录表 | `outputs/report_assets/appendix_tables/q3_paper_production_classification_annual.csv` | 不同日产量下按满足类型分类的年化统计 |
+| 附录表 | `outputs/report_assets/appendix_tables/q3_paper_all_candidates_summary.csv` | 24 场景 × 多日产量的候选方案压缩结果 |
+| 附录表 | `outputs/report_assets/appendix_tables/q3_all_scenarios_hourly_dispatch.csv` | 完整逐小时连续调节方案 |
+| 附录图 | `outputs/report_assets/appendix_figures/q3_paper_cost_green_scatter.png` | 补充展示吨氨成本与绿电比例关系 |
+| 附录图 | `outputs/report_assets/appendix_figures/q3_paper_cost_export_scatter.png` | 补充展示吨氨成本与新能源上网比例关系 |
+| 附录图 | `outputs/report_assets/appendix_figures/q3_paper_scenario_min_cost_dotplot.png` | 补充展示 24 场景最小成本方案点图 |
+
+论文正文建议只放：24 场景热力图、最小成本方案年化分类汇总表、Q2 vs Q3 六指标对比图。完整逐小时调度方案与候选方案明细放入附录或项目支撑材料。
 
 
 ## Q4 储能容量选择准则
